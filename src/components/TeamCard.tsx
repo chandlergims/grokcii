@@ -24,23 +24,30 @@ interface TeamCardProps {
 
 const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   return (
-    <div className="rounded-md border border-neutral-200 bg-white h-[320px] flex flex-col shadow transition-all duration-300 hover:border-[#f0b90b] cursor-pointer">
+    <div className="rounded-md border border-neutral-200 bg-white min-h-[320px] max-w-full flex flex-col shadow transition-all duration-300 hover:border-[#f0b90b] cursor-pointer">
       {/* Banner Image */}
-      <div className="h-24 w-full relative overflow-hidden">
+      <div className="min-h-24 w-full relative overflow-hidden">
         {team.bannerUrl ? (
-          <img 
-            src={team.bannerUrl} 
-            alt={`${team.name} banner`} 
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <div 
+            className="absolute inset-0 w-full h-full"
+            style={{
+              backgroundImage: `url(${team.bannerUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              minHeight: '6rem'
+            }}
+            aria-label={`${team.name} banner`}
+          ></div>
         ) : (
           <div 
-            className="absolute inset-0"
+            className="absolute inset-0 w-full h-full"
             style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(252, 248, 240, 1) 50%, rgba(250, 243, 221, 1) 100%)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              borderBottom: '1px solid rgba(240, 185, 11, 0.2)'
+              borderBottom: '1px solid rgba(240, 185, 11, 0.2)',
+              minHeight: '6rem'
             }}
           ></div>
         )}
@@ -63,8 +70,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
       </div>
       <div className="p-3 flex-1 flex flex-col">
         <div className="flex justify-between items-center mb-2">
-          <h4 className="text-xs font-bold text-gray-700">Team Members</h4>
-          <span className="text-xs text-gray-500">{team.members.length} {team.members.length === 1 ? 'member' : 'members'}</span>
+          <h4 className="text-sm font-bold text-gray-700">Team Members</h4>
+          <span className="text-sm text-gray-500">{team.members.length} {team.members.length === 1 ? 'member' : 'members'}</span>
         </div>
         {team.members.length > 0 ? (
           <div className="overflow-y-auto flex-1 pr-1 custom-scrollbar">
@@ -73,7 +80,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
                 <li key={member.id} className="bg-gray-100 p-2 rounded-md">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                      <span className="text-gray-800 text-xs font-bold">{member.name}</span>
+                      <span className="text-gray-800 text-sm font-bold">{member.name}</span>
                       {member.status && (
                         <div className="flex items-center ml-2">
                           <span className={`inline-block w-2.5 h-2.5 rounded-full ${
@@ -81,7 +88,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
                             member.status === 'rejected' ? 'bg-red-500' : 
                             'bg-yellow-500'
                           }`}></span>
-                          <span className={`ml-1.5 text-xs ${
+                          <span className={`ml-1.5 text-sm ${
                             member.status === 'accepted' ? 'text-green-600' : 
                             member.status === 'rejected' ? 'text-red-600' : 
                             'text-yellow-600'
@@ -93,7 +100,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
                         </div>
                       )}
                     </div>
-                    <span className="text-gray-600 text-xs truncate ml-2 max-w-[100px]" title={member.walletAddress}>
+                    <span className="text-gray-600 text-sm truncate ml-2 max-w-[100px]" title={member.walletAddress}>
                       {member.walletAddress.substring(0, 4)}...{member.walletAddress.substring(member.walletAddress.length - 4)}
                     </span>
                   </div>
@@ -103,7 +110,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-gray-500 text-xs">No team members yet</p>
+            <p className="text-gray-500 text-sm">No team members yet</p>
           </div>
         )}
       </div>

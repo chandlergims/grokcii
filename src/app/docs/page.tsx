@@ -192,6 +192,39 @@ const acceptInvitation = async (inviteId) => {
                   Prize pools can range from 30 SOL for smaller tournaments to much larger amounts for major events.
                 </p>
               </div>
+              
+              <h2 className="text-3xl font-semibold mt-10 mb-6">Prize Distribution</h2>
+              <p className="text-gray-700 mb-6 leading-relaxed text-lg">
+                When a team wins a tournament, the prize is distributed equally among all team members. This ensures that every participant receives a fair share of the rewards for their contribution to the team&apos;s success.
+              </p>
+              
+              <div className="bg-white p-6 rounded-lg border border-gray-200 my-8 shadow-sm">
+                <h3 className="font-medium text-xl mb-4">Current Distribution Model</h3>
+                <p className="text-gray-700 mb-3 text-lg">For a team of 5 members winning a 30 SOL prize:</p>
+                <div className="bg-gray-50 p-4 rounded font-mono text-base">
+                  Individual Prize = Total Prize / Number of Members
+                  <br />
+                  Individual Prize = 30 SOL / 5 = 6 SOL per member
+                </div>
+              </div>
+              
+              <p className="text-gray-700 mb-6 leading-relaxed text-lg">
+                In the future, we may introduce alternative distribution models that take into account individual performance metrics. This could reward team members based on their specific contributions to the team&apos;s overall success.
+              </p>
+              
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 my-8 shadow-sm">
+                <div className="flex items-start">
+                  <div className="bg-[#f0b90b]/20 p-2 rounded-full mr-4 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#f0b90b]" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-base text-gray-700 font-medium">Future Considerations</p>
+                    <p className="text-base text-gray-600">We are exploring performance-based distribution models that would reward individual traders based on metrics such as PnL contribution, risk management, and consistency. Any changes to the prize distribution model will be announced well in advance of implementation.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
