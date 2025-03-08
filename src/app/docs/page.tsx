@@ -11,21 +11,21 @@ export default function DocsPage() {
         return (
           <div>
             <h1 className="text-4xl font-bold mb-6">FNFantasy Overview</h1>
-            <div className="text-gray-500 text-base mb-8">A comprehensive guide to the FNFantasy platform</div>
+            <div className="text-gray-500 text-base mb-8">The definitive guide to the FNFantasy platform</div>
             
             <div className="prose max-w-none">
               <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                FNFantasy (FNF) is a competitive trading platform similar to traditional sports fantasy leagues, but focused on trading performance instead of sports statistics.
+                FNFantasy (FNF) is a sophisticated competitive trading platform that leverages the concept of traditional fantasy sports leagues, applying it to financial trading performance metrics rather than athletic statistics.
               </p>
               
               <div className="bg-[#f0b90b]/10 p-6 rounded-lg border-l-4 border-[#f0b90b] my-8">
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  Users form teams (called FNFs) of 5-10 members, and these teams compete against each other in tournaments based on their trading performance. The Cielo Finance API is used to track each member&apos;s PnL (Profit and Loss), and the combined performance determines the winning team.
+                  Participants establish teams (designated as FNFs) comprising 5-10 members. These teams engage in competitive tournaments where performance is evaluated based on trading metrics. The Cielo Finance API provides comprehensive tracking of each member&apos;s PnL (Profit and Loss), with the aggregated performance determining tournament advancement and ultimate victory.
                 </p>
               </div>
               
               <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                Winners receive cash prizes, making FNFantasy not just a fun competition but also a potentially rewarding one.
+                Successful teams are awarded substantial financial incentives in the form of SOL tokens, creating both a competitive environment and significant potential for financial gain.
               </p>
               
               <div className="mt-12">
@@ -55,8 +55,8 @@ export default function DocsPage() {
       case 'teams':
         return (
           <div>
-            <h1 className="text-4xl font-bold mb-6">Creating and Managing Teams</h1>
-            <div className="text-gray-500 text-base mb-8">Learn how to create, join, and manage your FNF teams</div>
+            <h1 className="text-4xl font-bold mb-6">Team Management</h1>
+            <div className="text-gray-500 text-base mb-8">Comprehensive guide to creating, joining, and managing FNF teams</div>
             
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">Creating a Team</h2>
@@ -134,8 +134,8 @@ const acceptInvitation = async (inviteId) => {
       case 'tournaments':
         return (
           <div>
-            <h1 className="text-4xl font-bold mb-6">Tournaments</h1>
-            <div className="text-gray-500 text-base mb-8">Learn about tournament structure, rules, and prizes</div>
+            <h1 className="text-4xl font-bold mb-6">Tournament Structure</h1>
+            <div className="text-gray-500 text-base mb-8">Detailed information on tournament formats, progression, and prize distribution</div>
             
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">How Tournaments Work</h2>
@@ -198,8 +198,8 @@ const acceptInvitation = async (inviteId) => {
       case 'performance':
         return (
           <div>
-            <h1 className="text-4xl font-bold mb-6">Performance Tracking</h1>
-            <div className="text-gray-500 text-base mb-8">Understanding how team performance is measured and evaluated</div>
+            <h1 className="text-4xl font-bold mb-6">Performance Analytics</h1>
+            <div className="text-gray-500 text-base mb-8">Advanced metrics and methodologies for measuring trading performance</div>
             
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">Cielo Finance API Integration</h2>
@@ -266,14 +266,10 @@ const acceptInvitation = async (inviteId) => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Sidebar Navigation */}
-      <div className="w-full md:w-72 md:min-h-screen border-r border-gray-200 flex-shrink-0 bg-gray-50">
+      <div className="w-full md:w-72 md:min-h-screen border-r border-gray-200 flex-shrink-0 bg-gray-50 md:sticky md:top-0 md:h-screen">
         <div className="sticky top-0 p-6 border-b border-gray-100 bg-white">
-          <div className="flex items-center">
-            <img src="/logo.png" alt="FNFantasy Logo" className="h-10 mr-4" />
-            <div>
-              <h3 className="font-medium text-xl text-gray-900">FNFantasy</h3>
-              <p className="text-sm text-gray-500">Documentation</p>
-            </div>
+          <div className="flex items-center justify-center">
+            <img src="/logo.png" alt="FNFantasy Logo" className="h-12" />
           </div>
         </div>
         <nav className="p-6">

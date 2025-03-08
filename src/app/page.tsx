@@ -485,6 +485,13 @@ export default function Home() {
             </div>
           </div>
           
+          {/* Partnership Logos */}
+          <div className="flex items-center justify-center mb-6 space-x-3">
+            <img src="/cielo.png" alt="Cielo" className="h-6" />
+            <span className="text-gray-400">×</span>
+            <img src="/logo.png" alt="FNFantasy" className="h-12" />
+          </div>
+          
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
             {/* Search Input */}
             <div className="relative w-full md:w-64">
