@@ -88,7 +88,7 @@ const Navbar = ({
                 href="https://x.com/FNFantasyApp" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${styles.navLink} text-sm px-4 py-2`}
+                className={`${styles.navLink} text-sm px-4 py-2 whitespace-nowrap`}
               >
                 Follow Us
               </Link>

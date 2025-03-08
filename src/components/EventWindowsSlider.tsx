@@ -47,13 +47,26 @@ const EventWindowsSlider = ({ eventId, sessions, defaultSessionId, onSessionChan
     }
   };
   
-  const handleSessionClick = (sessionId: string) => {
-    setActiveSessionId(sessionId);
-    
-    // Call the onSessionChange callback if provided
-    if (onSessionChange) {
-      onSessionChange(sessionId);
+  const handleSessionClick = (session: EventSession) => {
+    // Only allow clicking if the session is available
+    if (isSessionAvailable(session)) {
+      setActiveSessionId(session.id);
+      
+      // Call the onSessionChange callback if provided
+      if (onSessionChange) {
+        onSessionChange(session.id);
+      }
     }
+  };
+  
+  // Function to check if a session is available based on date
+  const isSessionAvailable = (session: EventSession): boolean => {
+    // Get current date in MM/DD/YYYY format
+    const today = new Date();
+    const currentDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+    
+    // Check if the session date matches the current date
+    return session.date === currentDate || session.id === 'bracket1';
   };
   
   return (
@@ -74,21 +87,27 @@ const EventWindowsSlider = ({ eventId, sessions, defaultSessionId, onSessionChan
         {/* Sessions */}
         <div className={styles.sessionsContainer}>
           <div className={styles.sessionsWrapper}>
-            {visibleSessions.map((session) => (
-              <button
-                key={session.id}
-                onClick={() => handleSessionClick(session.id)}
-                className={`${styles.sessionItem} ${activeSessionId === session.id ? styles.sessionItemActive : ''}`}
-              >
-                <div>
-                  <span className={styles.sessionTitle}>{session.title}</span>
-                  <time className={styles.sessionDate}>{session.date}</time>
-                  <span className={styles.sessionTime}>
-                    {session.startTime} - {session.endTime}
-                  </span>
-                </div>
-              </button>
-            ))}
+            {visibleSessions.map((session) => {
+              const isAvailable = isSessionAvailable(session);
+              return (
+                <button
+                  key={session.id}
+                  onClick={() => handleSessionClick(session)}
+                  className={`${styles.sessionItem} 
+                    ${activeSessionId === session.id ? styles.sessionItemActive : ''} 
+                    ${!isAvailable ? styles.sessionItemDisabled : ''}`}
+                  disabled={!isAvailable}
+                >
+                  <div>
+                    <span className={styles.sessionTitle}>{session.title}</span>
+                    <time className={styles.sessionDate}>{session.date}</time>
+                    <span className={styles.sessionTime}>
+                      {session.startTime} - {session.endTime}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
         

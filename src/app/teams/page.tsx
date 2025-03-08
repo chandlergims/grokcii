@@ -409,33 +409,59 @@ const TeamsPage = () => {
         onClose={() => !isDeleting && setIsDeleteModalOpen(false)} 
         title="Delete Team"
       >
-        <div className="p-4">
-          <p className="text-gray-300 mb-6 font-bold">
-            Are you sure you want to delete the team "{teamToDelete?.name}"? This action cannot be undone.
+        <div className="p-6">
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">Confirm Deletion</h3>
+              <p className="text-sm text-gray-500">This action cannot be undone</p>
+            </div>
+          </div>
+          
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+            <p className="text-gray-700 font-bold mb-2">You are about to delete:</p>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-[#f0b90b]/20 rounded-full flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#f0b90b]" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+              </div>
+              <span className="text-gray-900 font-bold">{teamToDelete?.name}</span>
+            </div>
+          </div>
+          
+          <p className="text-gray-700 mb-6">
+            Deleting this team will remove all associated data, including member information and tournament registrations.
           </p>
           
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
             <button
               type="button"
-              className="px-4 py-2 bg-transparent text-gray-400 hover:text-gray-300 transition-colors text-sm font-bold"
+              className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-gray-100 border border-gray-300 text-gray-700 h-8 text-sm justify-center"
               onClick={() => setIsDeleteModalOpen(false)}
               disabled={isDeleting}
+              style={{ fontFamily: 'var(--font-dm-mono)' }}
             >
-              Cancel
+              <span className="font-bold">Cancel</span>
             </button>
             <button
               type="button"
-              className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 transition-colors text-sm flex items-center font-bold"
+              className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-red-600/90 border border-red-600 bg-red-600 text-white h-8 text-sm justify-center"
               onClick={handleDeleteTeam}
               disabled={isDeleting}
+              style={{ fontFamily: 'var(--font-dm-mono)' }}
             >
               {isDeleting ? (
                 <>
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
-                  Deleting...
+                  <span className="font-bold">Deleting...</span>
                 </>
               ) : (
-                <>Delete Team</>
+                <span className="font-bold">Delete Team</span>
               )}
             </button>
           </div>

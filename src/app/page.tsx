@@ -9,11 +9,14 @@ import EventWindowsSlider from "../components/EventWindowsSlider";
 import CountdownTimer from "../components/CountdownTimer";
 
 // Sample event data
+const today = new Date();
+const currentDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
 const sampleEventSessions = [
   {
     id: 'bracket1',
     title: 'Tournament 1',
-    date: '3/7/2025',
+    date: currentDate,
     startTime: '07:00 PM',
     endTime: '10:00 PM',
   },
