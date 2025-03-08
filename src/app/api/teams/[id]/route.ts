@@ -24,25 +24,25 @@ interface Team {
 // GET /api/teams/:id - Get a specific team
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } } // Ensuring the type of params is correct
 ) {
   const client = new MongoClient(uri);
-  
+
   try {
     await client.connect();
     const db = client.db(dbName);
     const teamsCollection = db.collection<Team>('teams');
-    
+
     // Get team
     const team = await teamsCollection.findOne({ _id: new ObjectId(params.id) });
-    
+
     if (!team) {
       return NextResponse.json(
-        { error: 'Team not found' }, 
+        { error: 'Team not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({ team }, { status: 200 });
   } catch (error) {
     console.error('Error fetching team:', error);
@@ -55,44 +55,44 @@ export async function GET(
 // PATCH /api/teams/:id - Update a team
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } } // Same here, correctly typing the params
 ) {
   const client = new MongoClient(uri);
-  
+
   try {
     const body = await request.json();
-    
+
     await client.connect();
     const db = client.db(dbName);
     const teamsCollection = db.collection<Team>('teams');
-    
+
     // Create update object
     const updateData: Partial<Team> = {};
-    
+
     if (body.name) updateData.name = body.name;
     if (body.twitterLink !== undefined) updateData.twitterLink = body.twitterLink;
-    
+
     // Update team
     const result = await teamsCollection.updateOne(
       { _id: new ObjectId(params.id) },
       { $set: updateData }
     );
-    
+
     if (result.matchedCount === 0) {
       return NextResponse.json(
-        { error: 'Team not found' }, 
+        { error: 'Team not found' },
         { status: 404 }
       );
     }
-    
+
     // Get updated team
     const updatedTeam = await teamsCollection.findOne({ _id: new ObjectId(params.id) });
-    
+
     return NextResponse.json(
-      { 
-        message: 'Team updated successfully', 
-        team: updatedTeam 
-      }, 
+      {
+        message: 'Team updated successfully',
+        team: updatedTeam
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -106,44 +106,44 @@ export async function PATCH(
 // DELETE /api/teams/:id - Delete a team
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } } // Same fix for params
 ) {
   const client = new MongoClient(uri);
-  
+
   try {
     await client.connect();
     const db = client.db(dbName);
     const teamsCollection = db.collection<Team>('teams');
-    
+
     // Get team first to get member wallets
     const team = await teamsCollection.findOne({ _id: new ObjectId(params.id) });
-    
+
     if (!team) {
       return NextResponse.json(
-        { error: 'Team not found' }, 
+        { error: 'Team not found' },
         { status: 404 }
       );
     }
-    
+
     // Delete team
     await teamsCollection.deleteOne({ _id: new ObjectId(params.id) });
-    
+
     // Remove team from users' teams
     const usersCollection = db.collection('users');
     const memberWallets = team.members.map(member => member.walletAddress);
     const teamIdString = team._id.toString();
-    
+
     await usersCollection.updateMany(
       { walletAddress: { $in: memberWallets } },
       { $pull: { teams: teamIdString } as any }
     );
-    
+
     // Delete all invites for this team
     const invitesCollection = db.collection('invites');
     await invitesCollection.deleteMany({ teamId: teamIdString });
-    
+
     return NextResponse.json(
-      { message: 'Team deleted successfully' }, 
+      { message: 'Team deleted successfully' },
       { status: 200 }
     );
   } catch (error) {

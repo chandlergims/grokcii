@@ -1,7 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import styles from './EventWindowsSlider.module.css';
 
 interface EventSession {
@@ -16,11 +14,10 @@ interface EventWindowsSliderProps {
   eventId: string;
   sessions: EventSession[];
   defaultSessionId?: string;
+  onSessionChange?: (sessionId: string) => void;
 }
 
-const EventWindowsSlider = ({ eventId, sessions, defaultSessionId }: EventWindowsSliderProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+const EventWindowsSlider = ({ eventId, sessions, defaultSessionId, onSessionChange }: EventWindowsSliderProps) => {
   const [activeSessionId, setActiveSessionId] = useState<string>(defaultSessionId || (sessions.length > 0 ? sessions[0].id : ''));
   const [visibleSessions, setVisibleSessions] = useState<EventSession[]>([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -29,15 +26,9 @@ const EventWindowsSlider = ({ eventId, sessions, defaultSessionId }: EventWindow
   const visibleCount = 5;
   
   useEffect(() => {
-    // Get the bracket parameter from the URL
-    const bracketParam = searchParams.get('bracket');
-    if (bracketParam) {
-      setActiveSessionId(bracketParam);
-    }
-    
     // Update visible sessions based on start index
     updateVisibleSessions();
-  }, [searchParams, startIndex, sessions]);
+  }, [startIndex, sessions]);
   
   const updateVisibleSessions = () => {
     const endIndex = Math.min(startIndex + visibleCount, sessions.length);
@@ -59,19 +50,9 @@ const EventWindowsSlider = ({ eventId, sessions, defaultSessionId }: EventWindow
   const handleSessionClick = (sessionId: string) => {
     setActiveSessionId(sessionId);
     
-    // Update the URL with the new bracket parameter
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('bracket', sessionId);
-    
-    // Get the current path
-    const pathname = window.location.pathname;
-    
-    // If we're on the events page, update the URL with the events path
-    // Otherwise, update the URL with the current path
-    if (pathname === '/events') {
-      router.push(`/events?${params.toString()}`);
-    } else {
-      router.push(`${pathname}?${params.toString()}`);
+    // Call the onSessionChange callback if provided
+    if (onSessionChange) {
+      onSessionChange(sessionId);
     }
   };
   

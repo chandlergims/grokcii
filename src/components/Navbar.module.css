@@ -109,7 +109,7 @@
 }
 
 /* Button styles for the navbar */
-:global(.navbar-button) {
+.navbarButtonStyles :global(.navbar-button) {
   background-color: transparent;
   color: white;
   font-weight: 400;
@@ -124,26 +124,26 @@
   height: 32px;
 }
 
-:global(.navbar-button:hover) {
+.navbarButtonStyles :global(.navbar-button:hover) {
   background-color: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-:global(.navbar-button-primary) {
+.navbarButtonStyles :global(.navbar-button-primary) {
   background-color: #1a56db;
   border-color: #1a56db;
 }
 
-:global(.navbar-button-primary:hover) {
+.navbarButtonStyles :global(.navbar-button-primary:hover) {
   background-color: #1e429f;
   border-color: #1e429f;
 }
 
-:global(.navbar-button-secondary) {
+.navbarButtonStyles :global(.navbar-button-secondary) {
   background-color: transparent;
   color: #e5e7eb;
 }
 
-:global(.navbar-button-secondary:hover) {
+.navbarButtonStyles :global(.navbar-button-secondary:hover) {
   background-color: rgba(255, 255, 255, 0.05);
 }

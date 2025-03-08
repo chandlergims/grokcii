@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import TournamentBracket from "../components/TournamentBracket";
 import TeamCard from "../components/TeamCard";
@@ -113,8 +112,6 @@ interface Team {
 }
 
 export default function Home() {
-  const searchParams = useSearchParams();
-  const [activeSessionId, setActiveSessionId] = useState<string>('');
   const [teams, setTeams] = useState<Team[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [totalTeamCount, setTotalTeamCount] = useState<number>(0);
@@ -405,16 +402,7 @@ export default function Home() {
     }
   };
   
-  // Get the bracket parameter from the URL
-  useEffect(() => {
-    const bracketParam = searchParams.get('bracket');
-    if (bracketParam) {
-      setActiveSessionId(bracketParam);
-    } else {
-      // Default to the first session if no bracket parameter is provided
-      setActiveSessionId(sampleEventSessions[0].id);
-    }
-  }, [searchParams]);
+ 
   
   // Fetch teams and active tournament on component mount
   useEffect(() => {
@@ -449,7 +437,6 @@ export default function Home() {
       <EventWindowsSlider 
         eventId="fnf-tournaments"
         sessions={sampleEventSessions}
-        defaultSessionId={activeSessionId}
       />
       
       <div className="container mx-auto px-4 py-8">
@@ -582,8 +569,6 @@ export default function Home() {
         <div className="mb-12">
           {/* Tournament Bracket */}
           <TournamentBracket 
-            tournamentNumber={activeSessionId.replace('bracket', '')}
-            tournamentDate={sampleEventSessions.find(session => session.id === activeSessionId)?.date}
           />
         </div>
         

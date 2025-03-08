@@ -11,6 +11,6 @@
 }
 
 /* Hide minimap navigation */
-:global(div[role="navigation"]) {
+.bracketWrapper :global(div[role="navigation"]) {
   display: none !important;
 }
