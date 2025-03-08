@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "install": "npm install --legacy-peer-deps"
+    "install": "npm install --force"
   },
   "dependencies": {
     "@g-loot/react-tournament-brackets": "^1.0.31-rc",
