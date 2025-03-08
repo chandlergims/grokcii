@@ -1,0 +1,16 @@
+.bracketContainer {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bracketWrapper {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+}
+
+/* Hide minimap navigation */
+:global(div[role="navigation"]) {
+  display: none !important;
+}
