@@ -23,7 +23,7 @@ const sampleEventSessions = [
   {
     id: 'bracket2',
     title: 'Tournament 2',
-    date: '3/9/2025',
+    date: '3/12/2025',
     startTime: '06:00 PM',
     endTime: '09:00 PM',
   },
@@ -641,6 +641,7 @@ export default function Home() {
         <div className="mb-12">
           {/* Tournament Bracket */}
           <TournamentBracket 
+            isAdmin={isAdmin}
           />
         </div>
         

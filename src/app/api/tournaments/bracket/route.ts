@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 // Update the tournament bracket teams
 export async function POST(req: NextRequest) {
   try {
-    const { db } = await connectToDatabase();
+    const db = await connectToDatabase();
     const { bracketTeams } = await req.json();
     
     // Validate the request
