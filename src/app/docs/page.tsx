@@ -105,29 +105,6 @@ export default function DocsPage() {
                 <li className="text-gray-700">Remove team members</li>
               </ul>
               
-              <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 my-8 shadow-sm">
-                <p className="text-base text-gray-700 font-medium mb-3">Example Code: Accepting an Invitation</p>
-                <pre className="bg-gray-800 text-gray-100 p-5 rounded-lg overflow-x-auto">
-                  <code className="text-base">{`// Example of accepting a team invitation
-const acceptInvitation = async (inviteId) => {
-  const response = await fetch('/api/invites/accept', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': \`Bearer \${authToken}\`
-    },
-    body: JSON.stringify({ inviteId })
-  });
-  
-  if (response.ok) {
-    // Invitation accepted successfully
-    return true;
-  }
-  
-  return false;
-}`}</code>
-                </pre>
-              </div>
             </div>
           </div>
         );
@@ -184,7 +161,7 @@ const acceptInvitation = async (inviteId) => {
               
               <h2 className="text-3xl font-semibold mt-10 mb-6">Prizes</h2>
               <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                Tournament winners receive cash prizes, with the amount varying based on the tournament&apos;s size and entry fees. Prize distribution is typically announced before the tournament begins.
+                Tournament winners receive cash prizes, with the amount varying based on the tournament&apos;s size. Prize distribution is typically announced before the tournament begins.
               </p>
               
               <div className="bg-[#f0b90b]/10 p-6 rounded-lg border-l-4 border-[#f0b90b] my-8">
