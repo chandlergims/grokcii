@@ -141,6 +141,39 @@ export async function POST(request: NextRequest) {
   const client = new MongoClient(uri);
   
   try {
+    // Get token from Authorization header
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Authorization header is required. You must be logged in to create a team.' }, 
+        { status: 401 }
+      );
+    }
+    
+    // Extract token
+    const token = authHeader.split(' ')[1];
+    
+    // Decode token
+    let walletAddress;
+    try {
+      const decoded = Buffer.from(token, 'base64').toString();
+      const decodedJson = JSON.parse(decoded);
+      walletAddress = decodedJson.walletAddress;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return NextResponse.json(
+        { error: 'Invalid token format' }, 
+        { status: 401 }
+      );
+    }
+    
+    if (!walletAddress) {
+      return NextResponse.json(
+        { error: 'Invalid token: missing wallet address' }, 
+        { status: 401 }
+      );
+    }
+    
     // Check if the request is multipart/form-data
     const contentType = request.headers.get('content-type') || '';
     let body;
@@ -162,23 +195,6 @@ export async function POST(request: NextRequest) {
     } else {
       // Handle JSON
       body = await request.json();
-    }
-    
-    // Get token from Authorization header
-    const authHeader = request.headers.get('Authorization');
-    let walletAddress = '';
-    
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      // Extract token
-      const token = authHeader.split(' ')[1];
-      
-      // Decode token
-      try {
-        const decoded = JSON.parse(atob(token));
-        walletAddress = decoded.walletAddress;
-      } catch (error) {
-        console.error('Error decoding token:', error);
-      }
     }
     
     await client.connect();

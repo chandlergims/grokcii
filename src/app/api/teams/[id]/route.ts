@@ -5,6 +5,11 @@ import { MongoClient, ObjectId } from 'mongodb';
 const uri = process.env.MONGODB_URI || "mongodb+srv://test123:Ltd0HC5UDEIPAkVH@cluster0.hxfim.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const dbName = 'fnfantasy';
 
+// Admin wallet addresses with special permissions
+const ADMIN_WALLETS = [
+  'AEnb3z3o8NoVH5r7ppVWXw2DCu84S8n1L5MsP1Hpz5wT'
+];
+
 // Define team member interface
 interface TeamMember {
   id: string;
@@ -18,7 +23,9 @@ interface Team {
   name: string;
   members: TeamMember[];
   twitterLink?: string;
+  bannerUrl?: string;
   createdAt: Date;
+  createdBy: string;
 }
 
 // GET /api/teams/:id - Get a specific team
@@ -111,6 +118,42 @@ export async function DELETE(
   const client = new MongoClient(uri);
 
   try {
+    // Get token from Authorization header
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Authorization header is required' }, 
+        { status: 401 }
+      );
+    }
+    
+    // Extract token
+    const token = authHeader.split(' ')[1];
+    
+    // Decode token
+    let walletAddress;
+    try {
+      const decoded = Buffer.from(token, 'base64').toString();
+      const decodedJson = JSON.parse(decoded);
+      walletAddress = decodedJson.walletAddress;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return NextResponse.json(
+        { error: 'Invalid token format' }, 
+        { status: 401 }
+      );
+    }
+    
+    if (!walletAddress) {
+      return NextResponse.json(
+        { error: 'Invalid token: missing wallet address' }, 
+        { status: 401 }
+      );
+    }
+    
+    // Check if user is an admin
+    const isAdmin = ADMIN_WALLETS.includes(walletAddress);
+
     await client.connect();
     const db = client.db(dbName);
     const teamsCollection = db.collection<Team>('teams');
@@ -122,6 +165,15 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Team not found' },
         { status: 404 }
+      );
+    }
+    
+    // Check if user is authorized to delete this team
+    // Allow if user is an admin or the team creator
+    if (!isAdmin && team.createdBy !== walletAddress) {
+      return NextResponse.json(
+        { error: 'You are not authorized to delete this team' },
+        { status: 403 }
       );
     }
 

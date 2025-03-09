@@ -98,6 +98,11 @@ declare global {
   }
 }
 
+// Admin wallet addresses with special permissions
+const ADMIN_WALLETS = [
+  'AEnb3z3o8NoVH5r7ppVWXw2DCu84S8n1L5MsP1Hpz5wT'
+];
+
 // Define types for team members
 interface TeamMember {
   id: string;
@@ -192,6 +197,13 @@ export default function Home() {
     e.preventDefault();
     setFormError(null);
     
+    // Check if user is logged in
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setFormError("You must be logged in to create a team. Please log in and try again.");
+      return;
+    }
+    
     // Validate team name
     if (!newTeamName.trim()) {
       setFormError("Team name is required");
@@ -240,9 +252,6 @@ export default function Home() {
       formData.append('members', JSON.stringify(members));
       formData.append('twitterLink', twitterLink.trim());
       formData.append('bannerImage', bannerImage);
-      
-      // Get auth token from localStorage
-      const token = localStorage.getItem('authToken');
       
       // Create team via API
       const response = await fetch('/api/teams', {
@@ -425,14 +434,65 @@ export default function Home() {
 
   // We no longer need the handleAddMember function since we removed that functionality from TeamCard
   
-  // Check if user is logged in
+  // Check if user is logged in and if they are an admin
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentWalletAddress, setCurrentWalletAddress] = useState<string | null>(null);
   
-  // Check for auth token on component mount
+  // Check for auth token on component mount and determine if user is admin
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     setIsLoggedIn(!!token);
+    
+    if (token) {
+      try {
+        // Decode token to get wallet address
+        const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+        const walletAddress = decoded.walletAddress;
+        setCurrentWalletAddress(walletAddress);
+        
+        // Check if wallet address is in admin list
+        setIsAdmin(ADMIN_WALLETS.includes(walletAddress));
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
   }, []);
+  
+  // Function to handle team deletion
+  const handleDeleteTeam = async (teamId: string) => {
+    if (!isAdmin || !currentWalletAddress) return;
+    
+    if (!confirm('Are you sure you want to delete this team? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      
+      const response = await fetch(`/api/teams/${teamId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete team');
+      }
+      
+      // Refresh teams list
+      fetchTeams(searchQuery);
+      
+      // Show success message
+      alert('Team deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting team:', error);
+      alert(error.message || 'Failed to delete team');
+    }
+  };
 
   return (
     <>
@@ -548,7 +608,9 @@ export default function Home() {
                 {teams.map(team => (
                   <TeamCard 
                     key={team.id} 
-                    team={team} 
+                    team={team}
+                    isAdmin={isAdmin}
+                    onDelete={handleDeleteTeam}
                   />
                 ))}
                 {teams.length === 0 && (
