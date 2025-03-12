@@ -10,17 +10,17 @@ export default function DocsPage() {
       case 'overview':
         return (
           <div>
-            <h1 className="text-4xl font-bold mb-6">FNFantasy Overview</h1>
-            <div className="text-gray-500 text-base mb-8">The definitive guide to the FNFantasy platform</div>
+            <h1 className="text-4xl font-bold mb-6">FantasyFNF Overview</h1>
+            <div className="text-gray-500 text-base mb-8">The definitive guide to the FantasyFNF platform</div>
             
             <div className="prose max-w-none">
               <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                FNFantasy (FNF) is a sophisticated competitive trading platform that leverages the concept of traditional fantasy sports leagues, applying it to financial trading performance metrics rather than athletic statistics.
+                FantasyFNF is a sophisticated competitive trading platform that leverages the concept of traditional fantasy sports leagues, applying it to financial trading performance metrics rather than athletic statistics.
               </p>
               
               <div className="bg-[#f0b90b]/10 p-6 rounded-lg border-l-4 border-[#f0b90b] my-8">
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  Participants establish teams (designated as FNFs) comprising 5-10 members. These teams engage in competitive tournaments where performance is evaluated based on trading metrics. The Cielo Finance API provides comprehensive tracking of each member&apos;s PnL (Profit and Loss), with the aggregated performance determining tournament advancement and ultimate victory.
+                  Participants establish teams (designated as FantasyFNFs) comprising 5-10 members. These teams engage in competitive tournaments where performance is evaluated based on trading metrics. The Cielo Finance API provides comprehensive tracking of each member&apos;s PnL (Profit and Loss), with the aggregated performance determining tournament advancement and ultimate victory.
                 </p>
               </div>
               
@@ -56,12 +56,12 @@ export default function DocsPage() {
         return (
           <div>
             <h1 className="text-4xl font-bold mb-6">Team Management</h1>
-            <div className="text-gray-500 text-base mb-8">Comprehensive guide to creating, joining, and managing FNF teams</div>
+            <div className="text-gray-500 text-base mb-8">Comprehensive guide to creating, joining, and managing FantasyFNF teams</div>
             
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">Creating a Team</h2>
               <p className="text-gray-700 mb-6 leading-relaxed text-lg">
-                To create an FNF team, click the &quot;Create FNF&quot; button on the home page. You&apos;ll need to provide:
+                To create a FantasyFNF team, click the &quot;Create FantasyFNF&quot; button on the home page. You&apos;ll need to provide:
               </p>
               <ul className="list-disc pl-8 mb-8 space-y-3 text-lg">
                 <li className="text-gray-700">Team name</li>
@@ -117,7 +117,7 @@ export default function DocsPage() {
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">How Tournaments Work</h2>
               <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                Tournaments in FNFantasy are structured competitions where teams compete against each other based on their trading performance. Each tournament has a specific timeframe, and teams are matched in brackets.
+                Tournaments in FantasyFNF are structured competitions where teams compete against each other based on their trading performance. Each tournament has a specific timeframe, and teams are matched in brackets.
               </p>
               
               <div className="bg-white p-6 rounded-lg border border-gray-200 my-8 shadow-sm">
@@ -134,7 +134,7 @@ export default function DocsPage() {
               
               <h2 className="text-3xl font-semibold mt-10 mb-6">Joining a Tournament</h2>
               <ul className="list-disc pl-8 mb-8 space-y-3 text-lg">
-                <li className="text-gray-700">Each tournament is limited to 8 fully verified FNF teams</li>
+                <li className="text-gray-700">Each tournament is limited to 8 fully verified FantasyFNF teams</li>
                 <li className="text-gray-700">All team members must accept their invitations before a team can join a tournament</li>
                 <li className="text-gray-700">Teams can register for tournaments through the Events page or directly from tournament announcements</li>
                 <li className="text-gray-700">Teams are accepted on a first-come, first-served basis until the tournament fills up</li>
@@ -149,7 +149,7 @@ export default function DocsPage() {
                   </div>
                   <div>
                     <p className="text-base text-gray-700 font-medium">Important</p>
-                    <p className="text-base text-gray-600">A fully verified FNF team means all members have accepted their invitations and the team has a valid Twitter handle and banner image.</p>
+                    <p className="text-base text-gray-600">A fully verified FantasyFNF team means all members have accepted their invitations and the team has a valid Twitter handle and banner image.</p>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function DocsPage() {
             <div className="prose max-w-none">
               <h2 className="text-3xl font-semibold mt-10 mb-6">Cielo Finance API Integration</h2>
               <p className="text-gray-700 mb-6 leading-relaxed text-lg">
-                FNFantasy uses the Cielo Finance API to track the trading performance of each team member. This API provides real-time data on:
+                FantasyFNF uses the Cielo Finance API to track the trading performance of each team member. This API provides real-time data on:
               </p>
               <ul className="list-disc pl-8 mb-8 space-y-3 text-lg">
                 <li className="text-gray-700">Individual PnL (Profit and Loss)</li>
@@ -279,7 +279,7 @@ export default function DocsPage() {
       <div className="w-full md:w-72 md:min-h-screen border-r border-gray-200 flex-shrink-0 bg-gray-50 md:sticky md:top-0 md:h-screen">
         <div className="sticky top-0 p-6 border-b border-gray-100 bg-white">
           <div className="flex items-center justify-center">
-            <img src="/logo.png" alt="FNFantasy Logo" className="h-12" />
+            <img src="/logo.png" alt="FantasyFNF Logo" className="h-12" />
           </div>
         </div>
         <nav className="p-6">

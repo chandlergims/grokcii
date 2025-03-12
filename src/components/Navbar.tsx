@@ -58,7 +58,7 @@ const Navbar = ({
         {/* Logo - Far Left */}
         <div className="flex-none">
           <Link href="/" className={styles.logo}>
-            <img src="/logo.png" alt="FN Fantasy Logo" className="h-8" />
+            <img src="/logo.png" alt="FantasyFNF Logo" className="h-8" />
           </Link>
         </div>
         
@@ -85,7 +85,7 @@ const Navbar = ({
                 Docs
               </Link>
               <Link 
-                href="https://x.com/FNFantasyApp" 
+                href="https://x.com/FantasyFNF" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${styles.navLink} text-sm px-4 py-2 whitespace-nowrap`}

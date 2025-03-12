@@ -498,7 +498,7 @@ export default function Home() {
     <>
       {/* Tournament Selector - Full width at the very top with no padding */}
       <EventWindowsSlider 
-        eventId="fnf-tournaments"
+        eventId="fantasyfnf-tournaments"
         sessions={sampleEventSessions}
       />
       
@@ -549,7 +549,7 @@ export default function Home() {
           <div className="flex items-center justify-center mb-6 space-x-3">
             <img src="/cielo.png" alt="Cielo" className="h-6" />
             <span className="text-gray-400">×</span>
-            <img src="/logo.png" alt="FNFantasy" className="h-12" />
+            <img src="/logo.png" alt="FantasyFNF" className="h-12" />
           </div>
           
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
@@ -563,7 +563,7 @@ export default function Home() {
               <input
                 type="text"
                 className="block w-full p-2 pl-10 pr-10 text-sm text-gray-900 border border-[#f0b90b]/30 rounded-lg bg-white focus:outline-none"
-                placeholder="Search FNF teams..."
+                placeholder="Search FantasyFNF teams..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -593,7 +593,7 @@ export default function Home() {
               className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#f0b90b]/10 border border-[#f0b90b] text-[#f0b90b] h-8 text-sm justify-center cursor-pointer w-full md:w-auto font-bold"
               style={{ fontFamily: 'var(--font-dm-mono)' }}
             >
-              <span>Create FNF</span>
+              <span>Create FantasyFNF</span>
             </button>
           </div>
           
@@ -648,7 +648,7 @@ export default function Home() {
         {/* Login Modal is now handled by NavbarContainer */}
         
         {/* Create Team Modal */}
-        <Modal isOpen={isModalOpen} onClose={closeModal} title="Create New FNF Team">
+        <Modal isOpen={isModalOpen} onClose={closeModal} title="Create New FantasyFNF Team">
           <form onSubmit={handleCreateTeam} className="space-y-6">
             {/* Banner Preview */}
             <div className="relative h-32 rounded-lg overflow-hidden bg-white border border-gray-300">

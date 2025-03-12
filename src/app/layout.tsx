@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FNFantasy",
+  title: "FantasyFNF",
   description: "Your ultimate fantasy football experience",
   icons: {
     icon: [
