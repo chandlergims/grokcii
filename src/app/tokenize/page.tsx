@@ -243,7 +243,7 @@ export default function TokenizePage() {
       <h1 className="text-2xl font-bold mb-6 text-center" style={{ color: '#91c9a6' }}>Tokenize Your GrokCII Character</h1>
       
       {!isLoggedIn ? (
-        <div className="max-w-md mx-auto p-6 rounded-lg border border-[#91c9a6] shadow-md" style={{ backgroundColor: '#1E1E2E' }}>
+        <div className="max-w-md mx-auto p-6 rounded-lg border border-[#91c9a6] shadow-md" style={{ backgroundColor: '#000000' }}>
           <p className="text-center mb-4" style={{ color: '#ffffff' }}>
             Please connect your wallet to tokenize your GrokCII character.
           </p>
@@ -256,7 +256,7 @@ export default function TokenizePage() {
             
             {isLoading ? (
               <div className="max-w-xs mx-auto">
-                <div className="rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 mb-4" style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}>
+                <div className="rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 mb-4" style={{ backgroundColor: '#000000', color: '#91c9a6' }}>
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-col">
                       <div className="h-4 w-24 rounded bg-[#91c9a6]/20 animate-pulse"></div>
@@ -264,7 +264,7 @@ export default function TokenizePage() {
                   </div>
                   
                   {/* ASCII Art placeholder */}
-                  <div className="h-24 overflow-auto rounded p-1 my-1 flex items-center justify-center" style={{ backgroundColor: '#1E1E2E' }}>
+                  <div className="h-24 overflow-auto rounded p-1 my-1 flex items-center justify-center" style={{ backgroundColor: '#000000' }}>
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#91c9a6]"></div>
                   </div>
                   
@@ -275,7 +275,7 @@ export default function TokenizePage() {
                   </div>
                 </div>
                 
-                <div className="rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#1E1E2E' }}>
+                <div className="rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#000000' }}>
                   <div className="h-4 w-32 rounded bg-[#91c9a6]/20 animate-pulse mb-4"></div>
                   <div className="h-10 w-full rounded bg-[#91c9a6]/20 animate-pulse mb-4"></div>
                   <div className="h-3 w-3/4 rounded bg-[#91c9a6]/20 animate-pulse mb-6"></div>
@@ -285,7 +285,7 @@ export default function TokenizePage() {
             ) : grokCharacter ? (
               <div className="max-w-xs mx-auto">
                 <div className="rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 hover:border-[#91c9a6] transition-all duration-300 cursor-pointer mb-4"
-                  style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+                  style={{ backgroundColor: '#000000', color: '#91c9a6' }}
                   onClick={() => grokCharacter.tokenAddress ? visitPumpFun(grokCharacter.tokenAddress) : openDetailModal(grokCharacter)}
                 >
                   <div className="flex flex-row items-center justify-between">
@@ -300,7 +300,7 @@ export default function TokenizePage() {
                   </div>
                   
                   {/* ASCII Art - fixed height with scroll */}
-                  <div className="h-24 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#1E1E2E' }}>
+                  <div className="h-24 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#000000' }}>
                     <pre className="whitespace-pre font-mono text-[10px] text-center" style={{ color: '#91c9a6' }}>{grokCharacter.asciiArt}</pre>
                   </div>
                   
@@ -317,7 +317,7 @@ export default function TokenizePage() {
                 </div>
                 
                 {!grokCharacter.tokenAddress && (
-                  <form onSubmit={tokenizeCharacter} className="rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#1E1E2E' }}>
+                <form onSubmit={tokenizeCharacter} className="rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#000000' }}>
                     <div className="mb-4">
                       <label htmlFor="tokenAddress" className="block text-sm font-medium mb-1" style={{ color: '#91c9a6' }}>
                         SPL Token Address
@@ -365,7 +365,7 @@ export default function TokenizePage() {
                 )}
               </div>
             ) : (
-              <div className="max-w-xs mx-auto flex justify-center items-center h-40 rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#1E1E2E' }}>
+              <div className="max-w-xs mx-auto flex justify-center items-center h-40 rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#000000' }}>
                 <p className="text-sm" style={{ color: '#91c9a6' }}>No character found for your wallet address</p>
               </div>
             )}
@@ -386,7 +386,7 @@ export default function TokenizePage() {
                 <input
                   type="text"
                   className="block w-full p-2 pl-10 pr-10 text-sm border border-[#91c9a6] rounded-lg focus:outline-none"
-                  style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+                  style={{ backgroundColor: '#000000', color: '#91c9a6' }}
                   placeholder="Search tokenized characters..."
                   value={searchQuery}
                   onChange={(e) => {
@@ -432,7 +432,7 @@ export default function TokenizePage() {
                   <div 
                     key={character._id.toString()} 
                     className="rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 hover:border-[#91c9a6] transition-all duration-300 cursor-pointer"
-                    style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+                    style={{ backgroundColor: '#000000', color: '#91c9a6' }}
                     onClick={() => visitPumpFun(character.tokenAddress!)}
                   >
                     <div className="flex flex-row items-center justify-between">
@@ -456,7 +456,7 @@ export default function TokenizePage() {
                     </div>
                     
                     {/* ASCII Art - fixed height with scroll */}
-                    <div className="h-20 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#1E1E2E' }}>
+                    <div className="h-20 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#000000' }}>
                       <pre className="whitespace-pre font-mono text-[8px] text-center" style={{ color: '#91c9a6' }}>{character.asciiArt}</pre>
                     </div>
                     
@@ -478,7 +478,7 @@ export default function TokenizePage() {
       <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} title={selectedCharacter?.name || "Character Details"}>
         {selectedCharacter && (
           <div className="w-full">
-            <div className="p-4 rounded-md mb-4 overflow-x-auto" style={{ backgroundColor: '#1E1E2E' }}>
+            <div className="p-4 rounded-md mb-4 overflow-x-auto" style={{ backgroundColor: '#000000' }}>
               <pre className="whitespace-pre font-mono text-sm text-center" style={{ color: '#91c9a6' }}>{selectedCharacter.asciiArt}</pre>
             </div>
             <p className="mb-4" style={{ color: '#91c9a6' }}>{selectedCharacter.story}</p>
@@ -503,7 +503,7 @@ export default function TokenizePage() {
             <div className="flex justify-end">
               <button
                 onClick={closeDetailModal}
-                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#1E1E2E] border border-[#91c9a6] h-8 text-sm justify-center cursor-pointer"
+                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#000000] border border-[#91c9a6] h-8 text-sm justify-center cursor-pointer"
                 style={{ color: '#91c9a6', fontFamily: 'var(--font-dm-mono)' }}
               >
                 <span className="font-bold">Close</span>

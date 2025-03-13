@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         style={{ 
           animation: 'modalFadeIn 0.2s ease-out',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
-          backgroundColor: '#1E1E2E',
+          backgroundColor: '#000000',
           color: '#ffffff'
         }}
       >
@@ -87,7 +87,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         </div>
         
         {/* Content */}
-        <div className="px-6 py-5 flex flex-col" style={{ backgroundColor: '#1E1E2E' }}>
+        <div className="px-6 py-5 flex flex-col" style={{ backgroundColor: '#000000' }}>
           {children}
         </div>
       </div>

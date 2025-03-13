@@ -168,8 +168,8 @@ const TournamentsPage = () => {
       <div className="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 mb-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
         <div className="relative z-10">
-          <h2 className="text-2xl font-bold text-white mb-2">FNFantasy Season 1</h2>
-          <p className="text-gray-200 mb-4">The official tournament for FNFantasy!</p>
+          <h2 className="text-2xl font-bold text-white mb-2">GrokCII Season 1</h2>
+          <p className="text-gray-200 mb-4">The official tournament for GrokCII!</p>
           
           <div className="flex space-x-3">
             <Link

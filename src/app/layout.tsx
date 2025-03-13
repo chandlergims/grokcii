@@ -15,19 +15,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FantasyFNF",
-  description: "Your ultimate fantasy football experience",
+  title: "GrokCII",
+  description: "Generate unique fantasy characters with ASCII art",
   icons: {
     icon: [
       {
-        url: '/logo2.png',
-        href: '/logo2.png',
+        url: '/green-g-logo.svg',
+        href: '/green-g-logo.svg',
         sizes: 'any',
-        type: 'image/png',
+        type: 'image/svg+xml',
       },
     ],
-    shortcut: '/logo2.png',
-    apple: '/logo2.png',
+    shortcut: '/green-g-logo.svg',
+    apple: '/green-g-logo.svg',
   },
 };
 
