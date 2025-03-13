@@ -42,7 +42,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavbarContainer />
-        <main className="min-h-screen" style={{ background: '#ffffff' }}>
+        <main className="min-h-screen" style={{ background: '#030617' }}>
           {children}
         </main>
       </body>

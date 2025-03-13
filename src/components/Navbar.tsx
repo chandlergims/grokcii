@@ -27,7 +27,7 @@ const Navbar = ({
   isLoggedIn, 
   walletAddress, 
   onConnectWallet, 
-  onLogout, 
+  onLogout,
   teams = []
 }: NavbarProps) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -58,7 +58,9 @@ const Navbar = ({
         {/* Logo - Far Left */}
         <div className="flex-none">
           <Link href="/" className={styles.logo}>
-            <img src="/logo.png" alt="FantasyFNF Logo" className="h-8" />
+            <div className="flex items-center">
+              <span className="font-bold text-[#91c9a6]" style={{ fontFamily: 'var(--font-dm-mono)' }}>GrokCII</span>
+            </div>
           </Link>
         </div>
         
@@ -70,25 +72,26 @@ const Navbar = ({
           <div className="flex items-center space-x-4">
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-4">
-              {isLoggedIn && (
-                <Link 
-                  href="/teams" 
-                  className={`${styles.navLink} text-sm px-4 py-2`}
-                >
-                  Manage Teams
-                </Link>
-              )}
               <Link 
-                href="/docs" 
-                className={`${styles.navLink} text-sm px-4 py-2`}
+                href="/how-it-works"
+                className={`${styles.navLink} text-sm px-4 py-2 whitespace-nowrap`}
+                style={{ color: '#91c9a6' }}
               >
-                Docs
+                How It Works
               </Link>
               <Link 
-                href="https://x.com/FantasyFNF" 
+                href="/tokenize"
+                className={`${styles.navLink} text-sm px-4 py-2 whitespace-nowrap`}
+                style={{ color: '#91c9a6' }}
+              >
+                Tokenize
+              </Link>
+              <Link 
+                href="https://x.com/GrokCII" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${styles.navLink} text-sm px-4 py-2 whitespace-nowrap`}
+                style={{ color: '#91c9a6' }}
               >
                 Follow Us
               </Link>
@@ -101,7 +104,7 @@ const Navbar = ({
                 <div className="relative" ref={userDropdownRef}>
                   <button 
                     onClick={toggleUserDropdown}
-                    className={`${styles.walletButton} flex items-center gap-2 overflow-hidden rounded-md border border-[#f0b90b] text-[#f0b90b] h-8 text-sm px-2`}
+                    className={`${styles.walletButton} flex items-center gap-2 overflow-hidden rounded-md border border-[#91c9a6] text-[#91c9a6] h-8 text-sm px-2`}
                     style={{ fontFamily: 'var(--font-dm-mono)' }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4">
@@ -119,11 +122,11 @@ const Navbar = ({
                   
                   {/* Dropdown Menu */}
                   {showUserDropdown && (
-                    <div className="absolute right-0 mt-2 min-w-48 rounded-lg overflow-hidden border border-gray-200 bg-white p-1 text-gray-800 shadow-md z-50" style={{ fontFamily: 'var(--font-dm-mono)' }}>
+                    <div className="absolute right-0 mt-2 min-w-48 rounded-lg overflow-hidden border border-gray-700 p-1 shadow-md z-50" style={{ fontFamily: 'var(--font-dm-mono)', backgroundColor: '#030617', color: '#ffffff' }}>
                       {/* Wallet Address Header */}
                       <div className="p-2">
                         <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#f0b90b]">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#91c9a6]">
                             <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>
                             <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path>
                           </svg>
@@ -155,7 +158,7 @@ const Navbar = ({
             ) : (
               <button
                 onClick={onConnectWallet}
-                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:text-sidebar-active focus-visible:ring-2 active:text-sidebar-foreground-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 data-[active=true]:font-medium data-[active=true]:text-sidebar-active data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-active group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 border border-[#f0b90b] text-[#f0b90b] hover:bg-[#f0b90b]/10 h-8 text-sm w-full justify-center gap-0"
+                className="flex items-center overflow-hidden rounded-md border border-[#91c9a6] text-[#91c9a6] h-8 text-sm px-2 hover:bg-[#91c9a6]/10 transition-colors"
                 style={{ fontFamily: 'var(--font-dm-mono)' }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">

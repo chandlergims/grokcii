@@ -3,11 +3,34 @@ import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import Modal from './Modal';
 
+// Add TypeScript declarations for Phantom wallet
+declare global {
+  interface Window {
+    phantom?: {
+      solana?: {
+        isPhantom: boolean;
+        connect: () => Promise<{ publicKey: { toString: () => string } }>;
+        disconnect: () => Promise<void>;
+      };
+    };
+  }
+}
+
 // Define types for user
 interface User {
   _id: string;
   walletAddress: string;
   teams: string[];
+  createdAt: string;
+}
+
+// Define types for Grok character
+interface GrokCharacter {
+  _id: string;
+  walletAddress: string;
+  name: string;
+  asciiArt: string;
+  story: string;
   createdAt: string;
 }
 
@@ -18,7 +41,24 @@ const NavbarContainer = () => {
   const [user, setUser] = useState<User | null>(null);
   const [teams, setTeams] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [grokCharacter, setGrokCharacter] = useState<GrokCharacter | null>(null);
+  const [isGrokModalOpen, setIsGrokModalOpen] = useState(false);
   
+  // Fetch Grok character
+  const fetchGrokCharacter = async (address: string) => {
+    try {
+      setGrokCharacter(null); // Reset character before fetching
+      const response = await fetch(`/api/grok?walletAddress=${address}`);
+      if (response.ok) {
+        const data = await response.json();
+        setGrokCharacter(data.character);
+        setIsGrokModalOpen(true); // Open modal after fetching
+      }
+    } catch (error) {
+      console.error('Error fetching Grok character:', error);
+    }
+  };
+
   // Fetch teams data
   const fetchTeams = async (token: string) => {
     try {
@@ -61,7 +101,7 @@ const NavbarContainer = () => {
               setWalletAddress(address);
               setIsLoggedIn(true);
               
-              // Fetch teams data
+              // Fetch teams data only
               await fetchTeams(token);
             } else {
               // Token is invalid, clear it
@@ -166,8 +206,11 @@ const NavbarContainer = () => {
       setIsLoggedIn(true);
       setIsLoginModalOpen(false);
       
-      // Fetch teams data
+      // Fetch teams data only
       await fetchTeams(authData.token);
+      
+      // Dispatch custom login event
+      window.dispatchEvent(new Event('login'));
       
       console.log(`Successfully logged in with wallet: ${address}`);
     } catch (error: any) {
@@ -186,6 +229,9 @@ const NavbarContainer = () => {
     setWalletAddress('');
     setUser(null);
     setTeams([]);
+    
+    // Dispatch custom logout event
+    window.dispatchEvent(new Event('logout'));
   };
 
   return (
@@ -201,37 +247,40 @@ const NavbarContainer = () => {
       {/* Login Modal */}
       <Modal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} title="Connect Wallet">
         <div className="w-full">
-          <p className="text-center text-gray-700 text-sm mb-6">
-            Connect your wallet to create and manage your FantasyFNF teams
+          <p className="text-center mb-6" style={{ color: '#91c9a6' }}>
+            Connect your wallet to generate your GrokCII character
           </p>
           
           {/* Phantom Wallet Button */}
           <button
             onClick={connectPhantomWallet}
-            className="w-full flex items-center justify-between p-3 bg-white hover:bg-gray-50 border border-gray-300 rounded-lg transition-colors"
+            className="w-full flex items-center justify-between p-3 rounded-lg transition-colors border border-[#91c9a6]"
+            style={{ backgroundColor: 'rgba(145, 201, 166, 0.1)' }}
           >
             <div className="flex items-center">
               <div className="w-8 h-8 mr-3 rounded-full overflow-hidden flex items-center justify-center">
                 <img src="/phantom.png" alt="Phantom Wallet" className="w-full h-full object-cover" />
               </div>
-              <span className="text-gray-800 text-sm">Phantom Wallet</span>
+              <span style={{ color: '#ffffff' }}>Phantom Wallet</span>
             </div>
-            <span className="bg-[#f0b90b] text-xs text-white px-2 py-1 rounded">Connect</span>
+            <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: 'rgba(145, 201, 166, 0.2)', color: '#91c9a6', border: '1px solid #91c9a6' }}>Connect</span>
           </button>
           
-          <div className="text-center text-xs text-gray-500 mt-6">
+          <div className="text-center text-xs mt-6" style={{ color: '#91c9a6' }}>
             <p>Don't have Phantom wallet?</p>
             <a 
               href="https://phantom.app/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300"
+              className="hover:text-white transition-colors"
+              style={{ color: '#91c9a6' }}
             >
               Download Phantom
             </a>
           </div>
         </div>
       </Modal>
+      
     </>
   );
 };

@@ -48,13 +48,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/70">
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40">
       <div 
         ref={modalRef}
-        className="bg-white border border-gray-200 rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        className="border border-gray-700 rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
         style={{ 
           animation: 'modalFadeIn 0.2s ease-out',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+          backgroundColor: '#1E1E2E',
+          color: '#ffffff'
         }}
       >
         <style jsx global>{`
@@ -71,11 +73,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         `}</style>
         
         {/* Header with close button */}
-        <div className="px-4 py-3 flex justify-between items-center border-b border-gray-200">
-          <h3 className="text-base font-bold text-gray-800">{title}</h3>
+        <div className="px-4 py-3 flex justify-between items-center border-b border-gray-700">
+          <h3 className="text-base font-bold text-[#91c9a6]">{title}</h3>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors rounded-full p-1 hover:bg-gray-100"
+            className="text-gray-400 hover:text-white transition-colors rounded-full p-1 hover:bg-gray-700 cursor-pointer"
             aria-label="Close"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,7 +87,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
         </div>
         
         {/* Content */}
-        <div className="px-6 py-5 bg-white flex flex-col">
+        <div className="px-6 py-5 flex flex-col" style={{ backgroundColor: '#1E1E2E' }}>
           {children}
         </div>
       </div>

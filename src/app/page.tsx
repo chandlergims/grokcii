@@ -1,144 +1,31 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import TournamentBracket from "../components/TournamentBracket";
-import TeamCard from "../components/TeamCard";
 import Modal from "../components/Modal";
-import Button from "../components/Button";
-import EventWindowsSlider from "../components/EventWindowsSlider";
-import CountdownTimer from "../components/CountdownTimer";
 
-// Sample event data
-const today = new Date();
-const currentDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-
-const sampleEventSessions = [
-  {
-    id: 'bracket1',
-    title: 'Tournament 1',
-    date: currentDate,
-    startTime: '07:00 PM',
-    endTime: '10:00 PM',
-  },
-  {
-    id: 'bracket2',
-    title: 'Tournament 2',
-    date: '3/12/2025',
-    startTime: '06:00 PM',
-    endTime: '09:00 PM',
-  },
-  {
-    id: 'bracket3',
-    title: 'Tournament 3',
-    date: '3/14/2025',
-    startTime: '07:00 PM',
-    endTime: '10:00 PM',
-  },
-  {
-    id: 'bracket4',
-    title: 'Tournament 4',
-    date: '3/16/2025',
-    startTime: '06:00 PM',
-    endTime: '09:00 PM',
-  },
-  {
-    id: 'bracket5',
-    title: 'Tournament 5',
-    date: '3/23/2025',
-    startTime: '07:00 PM',
-    endTime: '10:00 PM',
-  },
-  {
-    id: 'bracket6',
-    title: 'Tournament 6',
-    date: '3/30/2025',
-    startTime: '06:00 PM',
-    endTime: '09:00 PM',
-  },
-  {
-    id: 'bracket7',
-    title: 'Tournament 7',
-    date: '4/6/2025',
-    startTime: '07:00 PM',
-    endTime: '10:00 PM',
-  },
-  {
-    id: 'bracket8',
-    title: 'Tournament 8',
-    date: '4/13/2025',
-    startTime: '06:00 PM',
-    endTime: '09:00 PM',
-  },
-  {
-    id: 'bracket9',
-    title: 'Tournament 9',
-    date: '4/20/2025',
-    startTime: '07:00 PM',
-    endTime: '10:00 PM',
-  },
-  {
-    id: 'bracket10',
-    title: 'Tournament 10',
-    date: '4/27/2025',
-    startTime: '06:00 PM',
-    endTime: '09:00 PM',
-  },
-];
-
-// Add TypeScript declarations for Phantom wallet
-declare global {
-  interface Window {
-    phantom?: {
-      solana?: {
-        isPhantom: boolean;
-        connect: () => Promise<{ publicKey: { toString: () => string } }>;
-        disconnect: () => Promise<void>;
-      };
-    };
-  }
-}
-
-// Admin wallet addresses with special permissions
-const ADMIN_WALLETS = [
-  'AEnb3z3o8NoVH5r7ppVWXw2DCu84S8n1L5MsP1Hpz5wT'
-];
-
-// Define types for team members
-interface TeamMember {
-  id: string;
-  name: string;
+// Define types for Grok character
+interface GrokCharacter {
+  _id: string;
   walletAddress: string;
-}
-
-// Define types for the team
-interface Team {
-  id: string;
   name: string;
-  members: TeamMember[];
-  twitterLink: string; // Changed from optional to required
-  bannerUrl: string; // Changed from optional to required
+  asciiArt: string;
+  story: string;
+  createdAt: string;
 }
 
 export default function Home() {
-  const [teams, setTeams] = useState<Team[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [totalTeamCount, setTotalTeamCount] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newTeamName, setNewTeamName] = useState('');
-  const [newWalletAddresses, setNewWalletAddresses] = useState<string[]>(Array(5).fill(''));
-  const [walletErrors, setWalletErrors] = useState<string[]>(Array(5).fill(''));
-  const [twitterLink, setTwitterLink] = useState('');
-  const [formError, setFormError] = useState<string | null>(null);
-  const [bannerImage, setBannerImage] = useState<File | null>(null);
-
-  // Function to validate Solana wallet address
-  const isSolanaAddress = (address: string): boolean => {
-    // Solana addresses are base58 encoded and 32-44 characters long
-    const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-    return base58Regex.test(address);
-  };
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [grokCharacter, setGrokCharacter] = useState<GrokCharacter | null>(null);
+  const [allCharacters, setAllCharacters] = useState<GrokCharacter[]>([]);
+  const [isGrokLoading, setIsGrokLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<GrokCharacter | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  
   // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
@@ -147,686 +34,345 @@ export default function Home() {
   // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setNewTeamName('');
-    setNewWalletAddresses(Array(5).fill(''));
-    setWalletErrors(Array(5).fill(''));
-    setTwitterLink('');
-    setFormError(null);
-    setBannerImage(null);
+  };
+  
+  // Function to open character detail modal
+  const openDetailModal = (character: GrokCharacter) => {
+    setSelectedCharacter(character);
+    setIsDetailModalOpen(true);
   };
 
-  // Function to add a new wallet address field
-  const addWalletAddressField = () => {
-    if (newWalletAddresses.length < 10) {
-      setNewWalletAddresses([...newWalletAddresses, '']);
-      setWalletErrors([...walletErrors, '']);
-    }
+  // Function to close character detail modal
+  const closeDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedCharacter(null);
   };
-
-  // Function to update a wallet address
-  const updateWalletAddress = (index: number, value: string) => {
-    const updatedAddresses = [...newWalletAddresses];
-    updatedAddresses[index] = value;
-    setNewWalletAddresses(updatedAddresses);
-    
-    // Validate the wallet address
-    const updatedErrors = [...walletErrors];
-    if (value.trim() && !isSolanaAddress(value.trim())) {
-      updatedErrors[index] = 'Invalid Solana address';
-    } else {
-      updatedErrors[index] = '';
-    }
-    setWalletErrors(updatedErrors);
-  };
-
-  // Function to remove a wallet address field
-  const removeWalletAddressField = (index: number) => {
-    if (newWalletAddresses.length > 5) {
-      const updatedAddresses = [...newWalletAddresses];
-      updatedAddresses.splice(index, 1);
-      setNewWalletAddresses(updatedAddresses);
-      
-      const updatedErrors = [...walletErrors];
-      updatedErrors.splice(index, 1);
-      setWalletErrors(updatedErrors);
-    }
-  };
-
-  // Function to create a new team
-  const handleCreateTeam = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-    
-    // Check if user is logged in
+  
+  // Function to check login status and load character
+  const checkLoginAndLoadCharacter = () => {
     const token = localStorage.getItem('authToken');
-    if (!token) {
-      setFormError("You must be logged in to create a team. Please log in and try again.");
-      return;
-    }
-    
-    // Validate team name
-    if (!newTeamName.trim()) {
-      setFormError("Team name is required");
-      return;
-    }
-    
-    // Validate Twitter link
-    if (!twitterLink.trim()) {
-      setFormError("Twitter handle is required");
-      return;
-    }
-    
-    // Validate banner image
-    if (!bannerImage) {
-      setFormError("Banner image is required");
-      return;
-    }
-    
-    // Filter out empty wallet addresses
-    const validWalletAddresses = newWalletAddresses.filter(address => address.trim() !== '');
-    
-    // Validate minimum number of wallet addresses
-    if (validWalletAddresses.length < 5) {
-      setFormError(`At least 5 wallet addresses are required. You provided ${validWalletAddresses.length}.`);
-      return;
-    }
-    
-    // Validate all wallet addresses are valid Solana addresses
-    const invalidAddresses = validWalletAddresses.filter(address => !isSolanaAddress(address.trim()));
-    if (invalidAddresses.length > 0) {
-      setFormError(`${invalidAddresses.length} invalid Solana wallet address(es). Please check and try again.`);
-      return;
-    }
-    
-    // Create team members from wallet addresses
-    const members: TeamMember[] = validWalletAddresses.map((address, index) => ({
-      id: `member-${Date.now()}-${index}`,
-      name: `Member ${index + 1}`,
-      walletAddress: address.trim()
-    }));
-
-    try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('name', newTeamName);
-      formData.append('members', JSON.stringify(members));
-      formData.append('twitterLink', twitterLink.trim());
-      formData.append('bannerImage', bannerImage);
-      
-      // Create team via API
-      const response = await fetch('/api/teams', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        setFormError(errorData.error || 'Failed to create team');
-        return;
-      }
-      
-      // Fetch updated teams
-      fetchTeams();
-      closeModal();
-    } catch (error) {
-      console.error('Error creating team:', error);
-      setFormError('An error occurred while creating the team');
-    }
-  };
-  
-  // State for active tournament and join tournament functionality
-  const [activeTournament, setActiveTournament] = useState<{
-    id: string;
-    name: string;
-    teams: Team[];
-    startDate: string;
-  } | null>(null);
-  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [myTeams, setMyTeams] = useState<Team[]>([]);
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const [isJoiningTournament, setIsJoiningTournament] = useState(false);
-  const [joinError, setJoinError] = useState<string | null>(null);
-
-  // Function to fetch teams
-  const fetchTeams = async (query: string = '') => {
-    try {
-      setIsLoading(true);
-      
-      let url = '/api/teams';
-      const queryParams = new URLSearchParams();
-
-      if (query.trim()) {
-        queryParams.append('search', query);
-      } else {
-        queryParams.append('limit', '5'); // Only limit when no search query
-      }
-
-      if (queryParams.toString()) {
-        url += `?${queryParams.toString()}`;
-      }
-      
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setTeams(data.teams);
-        setTotalTeamCount(data.totalCount);
-      }
-    } catch (error) {
-      console.error('Error fetching teams:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // Function to fetch active tournament
-  const fetchActiveTournament = async () => {
-    try {
-      const response = await fetch('/api/tournaments/active');
-      if (response.ok) {
-        const data = await response.json();
-        setActiveTournament(data.tournament);
-      }
-    } catch (error) {
-      console.error('Error fetching active tournament:', error);
-    }
-  };
-  
-  // Function to fetch user's teams
-  const fetchMyTeams = async () => {
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      
-      const response = await fetch('/api/teams/my-teams', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setMyTeams(data.teams || []);
-      }
-    } catch (error) {
-      console.error('Error fetching user teams:', error);
-    }
-  };
-  
-  // Function to open join tournament modal
-  const openJoinModal = () => {
-    fetchMyTeams();
-    setIsJoinModalOpen(true);
-    setSelectedTeamId(null);
-    setJoinError(null);
-  };
-  
-  // Function to close join tournament modal
-  const closeJoinModal = () => {
-    setIsJoinModalOpen(false);
-    setSelectedTeamId(null);
-    setJoinError(null);
-  };
-  
-  // Function to join tournament
-  const handleJoinTournament = async () => {
-    if (!selectedTeamId) {
-      setJoinError('Please select a team');
-      return;
-    }
-    
-    try {
-      setIsJoiningTournament(true);
-      setJoinError(null);
-      
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      
-      const response = await fetch('/api/tournaments/join', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          teamId: selectedTeamId
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to join tournament');
-      }
-      
-      // Refresh tournament data
-      fetchActiveTournament();
-      closeJoinModal();
-      
-      // Show success message
-      alert('Successfully joined tournament!');
-    } catch (error: any) {
-      console.error('Error joining tournament:', error);
-      setJoinError(error.message || 'Failed to join tournament');
-    } finally {
-      setIsJoiningTournament(false);
-    }
-  };
-  
- 
-  
-  // Fetch teams and active tournament on component mount
-  useEffect(() => {
-    fetchTeams();
-    fetchActiveTournament();
-  }, []);
-  
-  // Trigger search when query changes
-  useEffect(() => {
-    // Debounce search to avoid too many API calls
-    const debounceTimeout = setTimeout(() => {
-      fetchTeams(searchQuery);
-    }, 300); // 300ms debounce
-    
-    return () => clearTimeout(debounceTimeout);
-  }, [searchQuery]);
-
-  // We no longer need the handleAddMember function since we removed that functionality from TeamCard
-  
-  // Check if user is logged in and if they are an admin
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [currentWalletAddress, setCurrentWalletAddress] = useState<string | null>(null);
-  
-  // Check for auth token on component mount and determine if user is admin
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    setIsLoggedIn(!!token);
-    
     if (token) {
       try {
         // Decode token to get wallet address
         const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-        const walletAddress = decoded.walletAddress;
-        setCurrentWalletAddress(walletAddress);
+        const address = decoded.walletAddress;
         
-        // Check if wallet address is in admin list
-        setIsAdmin(ADMIN_WALLETS.includes(walletAddress));
+        if (address) {
+          setWalletAddress(address);
+          setIsLoggedIn(true);
+          
+          // Load the character for this wallet
+          loadCharacter(address);
+        }
       } catch (error) {
         console.error('Error decoding token:', error);
       }
+    } else {
+      setIsLoggedIn(false);
+      setWalletAddress('');
+      setGrokCharacter(null);
     }
+  };
+  
+  // Check if user is logged in on component mount and load characters
+  useEffect(() => {
+    // Load all characters
+    loadAllCharacters();
+    
+    // Check login status
+    checkLoginAndLoadCharacter();
+    
+    // Set up storage event listener to detect login/logout
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'authToken') {
+        checkLoginAndLoadCharacter();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event for login detection within the same window
+    const handleLoginEvent = () => {
+      checkLoginAndLoadCharacter();
+    };
+    
+    window.addEventListener('login', handleLoginEvent);
+    window.addEventListener('logout', handleLoginEvent);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('login', handleLoginEvent);
+      window.removeEventListener('logout', handleLoginEvent);
+    };
   }, []);
   
-  // Function to handle team deletion
-  const handleDeleteTeam = async (teamId: string) => {
-    if (!isAdmin || !currentWalletAddress) return;
-    
-    if (!confirm('Are you sure you want to delete this team? This action cannot be undone.')) {
+  // Function to load all characters
+  const loadAllCharacters = async () => {
+    try {
+      const response = await fetch('/api/grok/all');
+      if (response.ok) {
+        const data = await response.json();
+        setAllCharacters(data.characters);
+      }
+    } catch (error) {
+      console.error('Error loading all characters:', error);
+    }
+  };
+  
+  // Function to search characters
+  const searchCharacters = async (query: string) => {
+    if (!query.trim()) {
+      loadAllCharacters();
       return;
     }
     
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      
-      const response = await fetch(`/api/teams/${teamId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete team');
+      setIsSearching(true);
+      const response = await fetch(`/api/grok/search?q=${encodeURIComponent(query)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setAllCharacters(data.characters);
       }
+    } catch (error) {
+      console.error('Error searching characters:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+  
+  // Effect to handle search with debounce
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      searchCharacters(searchQuery);
+    }, 300);
+    
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+  
+  // Function to load character for a wallet
+  const loadCharacter = async (address: string) => {
+    try {
+      setIsGrokLoading(true);
+      const response = await fetch(`/api/grok?walletAddress=${address}`);
+      if (response.ok) {
+        const data = await response.json();
+        setGrokCharacter(data.character);
+        
+        // Refresh all characters after loading user's character
+        loadAllCharacters();
+      }
+    } catch (error) {
+      console.error('Error loading character:', error);
+    } finally {
+      setIsGrokLoading(false);
+    }
+  };
+  
+  // Function to create a Grok character
+  const createGrokCharacter = async (forceRefresh = false) => {
+    if (!isLoggedIn || !walletAddress) {
+      alert("You must be logged in to create a GrokCII character");
+      return;
+    }
+    
+    try {
+      setIsGrokLoading(true);
       
-      // Refresh teams list
-      fetchTeams(searchQuery);
-      
-      // Show success message
-      alert('Team deleted successfully');
-    } catch (error: any) {
-      console.error('Error deleting team:', error);
-      alert(error.message || 'Failed to delete team');
+      const url = forceRefresh 
+        ? `/api/grok?walletAddress=${walletAddress}&refresh=true`
+        : `/api/grok?walletAddress=${walletAddress}`;
+        
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setGrokCharacter(data.character);
+      } else {
+        throw new Error("Failed to create GrokCII character");
+      }
+    } catch (error) {
+      console.error('Error creating GrokCII character:', error);
+      alert("Failed to create GrokCII character. Please try again.");
+    } finally {
+      setIsGrokLoading(false);
     }
   };
 
   return (
-    <>
-      {/* Tournament Selector - Full width at the very top with no padding */}
-      <EventWindowsSlider 
-        eventId="fantasyfnf-tournaments"
-        sessions={sampleEventSessions}
-      />
+    <div className="container mx-auto px-4 py-8">
+      {/* Info Box - Positioned in top left */}
+      <div className="relative">
+        <div className="absolute top-0 left-0 w-64 p-3 rounded-lg border border-[#91c9a6] shadow-md z-10" 
+          style={{ backgroundColor: 'rgba(3, 6, 23, 0.95)' }}>
+          <div className="flex justify-between items-center mb-1">
+            <h3 className="text-sm font-bold" style={{ color: '#91c9a6' }}>About GrokCII</h3>
+            <div className="text-xs text-[#91c9a6] cursor-pointer hover:text-white">ⓘ</div>
+          </div>
+          <p className="text-xs mb-1" style={{ color: '#ffffff', lineHeight: '1.2' }}>
+            Every wallet gets a unique ASCII character generated by Grok AI with a name and backstory.
+          </p>
+          <p className="text-xs" style={{ color: '#ffffff', lineHeight: '1.2' }}>
+            <span className="font-bold" style={{ color: '#91c9a6' }}>Tokenize:</span> Turn your character into an SPL token on Solana and join the ecosystem!
+          </p>
+        </div>
+      </div>
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Teams Section */}
-        <div className="mb-12">
-          <div className="mb-6 flex justify-between items-center">
-            <div className="rounded-md border border-neutral-200 bg-white text-neutral-950 shadow px-4 py-3 flex flex-col gap-1 hover:border-[#f0b90b] transition-all duration-300">
-              <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold">Registered Teams</p>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-sm font-bold text-center">{totalTeamCount}</p>
-              </div>
-            </div>
-            
-            {/* Cash Prize */}
-            <div className="rounded-md border border-neutral-200 bg-white text-neutral-950 shadow px-4 py-3 flex flex-col gap-1 hover:border-[#f0b90b] transition-all duration-300">
-              <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold">Cash Prize</p>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-sm font-bold text-center"><span className="text-[#f0b90b]">30 SOL</span></p>
-              </div>
-            </div>
-            
-            {/* Next Tournament */}
-            <div className="rounded-md border border-neutral-200 bg-white text-neutral-950 shadow px-4 py-3 flex flex-col gap-1 hover:border-[#f0b90b] transition-all duration-300">
-              <div className="flex flex-row items-center justify-between">
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold">Next Tournament</p>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <p className="text-sm font-bold text-center">
-                  {/* Extract just the time display from CountdownTimer */}
-                  <CountdownTimer targetHour={12} targetMinute={0} />
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Partnership Logos */}
-          <div className="flex items-center justify-center mb-6 space-x-3">
-            <img src="/cielo.png" alt="Cielo" className="h-6" />
-            <span className="text-gray-400">×</span>
-            <img src="/logo.png" alt="FantasyFNF" className="h-12" />
-          </div>
-          
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-            {/* Search Input */}
-            <div className="relative w-full md:w-64">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                </svg>
-              </div>
-              <input
-                type="text"
-                className="block w-full p-2 pl-10 pr-10 text-sm text-gray-900 border border-[#f0b90b]/30 rounded-lg bg-white focus:outline-none"
-                placeholder="Search FantasyFNF teams..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3"
-                  onClick={() => setSearchQuery('')}
-                >
-                  <svg 
-                    className="w-4 h-4 text-gray-500 hover:text-[#f0b90b] transition-colors" 
-                    aria-hidden="true" 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-            
-            {/* Create Team Button */}
-            <button
-              onClick={openModal}
-              className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#f0b90b]/10 border border-[#f0b90b] text-[#f0b90b] h-8 text-sm justify-center cursor-pointer w-full md:w-auto font-bold"
-              style={{ fontFamily: 'var(--font-dm-mono)' }}
-            >
-              <span>Create FantasyFNF</span>
-            </button>
-          </div>
-          
-          <div>
-            {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#f0b90b]"></div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {/* Show all teams */}
-                {teams.map(team => (
-                  <TeamCard 
-                    key={team.id} 
-                    team={team}
-                    isAdmin={isAdmin}
-                    onDelete={handleDeleteTeam}
-                  />
-                ))}
-                {teams.length === 0 && (
-                  <div className="col-span-5 text-center py-10 bg-gray-50 rounded-lg border border-gray-200">
-                    {searchQuery ? (
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <p className="text-gray-500">No teams found matching "<span className="font-medium">{searchQuery}</span>"</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        <p className="text-gray-500">No teams created yet</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+      
+      {/* User's Character Card (if logged in) */}
+      <div className="mt-4 mb-6">
+        <div className="relative mb-3">
+          <h2 className="text-lg font-bold text-center" style={{ color: '#91c9a6' }}>Your Character</h2>
+          {showErrorMessage && (
+            <p className="text-red-500 text-xs text-center mt-1 animate-pulse">You already have a character</p>
+          )}
         </div>
         
-        {/* Tournament Section - Bracket only */}
-        <div className="mb-12">
-          {/* Tournament Bracket */}
-          <TournamentBracket 
-            isAdmin={isAdmin}
-          />
-        </div>
+        {/* Generate Character button removed - characters auto-create on login */}
         
-        {/* Login Modal is now handled by NavbarContainer */}
-        
-        {/* Create Team Modal */}
-        <Modal isOpen={isModalOpen} onClose={closeModal} title="Create New FantasyFNF Team">
-          <form onSubmit={handleCreateTeam} className="space-y-6">
-            {/* Banner Preview */}
-            <div className="relative h-32 rounded-lg overflow-hidden bg-white border border-gray-300">
-              {bannerImage && (
-                <img 
-                  src={URL.createObjectURL(bannerImage)} 
-                  alt="Team banner" 
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              )}
-              {/* Black background overlay removed */}
-              <div className="absolute bottom-0 left-0 right-0 p-3 flex justify-between items-center">
-                <h3 className="text-sm font-bold text-black" style={{ fontFamily: 'var(--font-dm-mono)' }}>{newTeamName || "Your Team Name"}</h3>
-                {twitterLink && (
-                  <a 
-                    href={twitterLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-black hover:text-[#f0b90b] transition-colors p-1 rounded-full"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                  </a>
-                )}
+        {isGrokLoading ? (
+          <div className="max-w-xs mx-auto flex justify-center items-center h-40 rounded-md border border-[#91c9a6] shadow" style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#91c9a6]"></div>
+          </div>
+        ) : grokCharacter ? (
+          <div 
+            className="max-w-xs mx-auto rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 hover:border-[#91c9a6] transition-all duration-300 cursor-pointer"
+            style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+            onClick={() => openDetailModal(grokCharacter)}
+          >
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-col">
+                <p className="text-sm font-bold" style={{ color: '#91c9a6' }}>{grokCharacter.name}</p>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column - Team Info */}
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="teamName" className="block text-sm font-bold text-gray-700 mb-1">
-                    Team Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="teamName"
-                    type="text"
-                    placeholder="Enter team name"
-                    className="w-full p-2.5 bg-white border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#f0b90b] focus:border-[#f0b90b]"
-                    value={newTeamName}
-                    onChange={(e) => setNewTeamName(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="twitterLink" className="block text-sm font-bold text-gray-700 mb-1">
-                    Twitter @ <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="twitterLink"
-                    type="text"
-                    placeholder="Username"
-                    className="w-full p-2.5 bg-white border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#f0b90b] focus:border-[#f0b90b]"
-                    value={twitterLink.replace('https://x.com/', '')}
-                    onChange={(e) => {
-                      // Store just the username, but with the full URL for the href
-                      const username = e.target.value.trim().replace('@', '');
-                      setTwitterLink(username ? `https://x.com/${username}` : '');
-                    }}
-                    required
-                  />
-                  <p className="text-xs font-bold text-gray-600 mt-1">Enter username without @</p>
-                </div>
-                
-                <div>
-                  <label htmlFor="bannerImage" className="block text-sm font-bold text-gray-700 mb-1">
-                    Banner Image <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="bannerImage"
-                    type="file"
-                    accept="image/*"
-                    className="w-full p-2 bg-white border border-gray-300 rounded text-gray-800 file:mr-4 file:py-1 file:px-4 file:rounded file:border file:border-[#f0b90b] file:text-[#f0b90b] file:bg-transparent hover:file:bg-[#f0b90b]/10 cursor-pointer"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setBannerImage(e.target.files[0]);
-                      }
-                    }}
-                    required
-                  />
-                  <p className="text-xs font-bold text-gray-600 mt-1">Recommended size: 1200 x 400 pixels</p>
-                </div>
-              </div>
-              
-              {/* Right Column - Team Members */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">
-                  Solana Wallet Addresses <span className="text-red-500">*</span>
-                </label>
-                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                  {newWalletAddresses.map((address, index) => (
-                    <div key={index} className="flex flex-col">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="text"
-                          placeholder="Enter Solana wallet address"
-                          className={`flex-1 p-2.5 bg-white border ${walletErrors[index] ? 'border-red-500' : 'border-gray-300'} rounded text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#f0b90b] focus:border-[#f0b90b] text-xs`}
-                          value={address}
-                          onChange={(e) => updateWalletAddress(index, e.target.value)}
-                          required={index < 5}
-                        />
-                        {newWalletAddresses.length > 5 && (
-                          <button
-                            type="button"
-                            onClick={() => removeWalletAddressField(index)}
-                            className="p-1.5 text-gray-500 hover:text-red-500 transition-colors"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        )}
-                      </div>
-                      {walletErrors[index] && (
-                        <p className="text-xs text-red-500 mt-1">{walletErrors[index]}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={addWalletAddressField}
-                  className="mt-2 text-xs font-bold text-[#f0b90b] hover:text-[#e5b00a] flex items-center transition-colors"
-                  disabled={newWalletAddresses.length >= 10}
+              <div className="flex flex-col">
+                <Link
+                  href="/tokenize"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="text-xs text-[#91c9a6] hover:text-[#91c9a6] transition-colors cursor-pointer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                  </svg>
-                  Add another wallet address
-                </button>
+                  Tokenize
+                </Link>
               </div>
             </div>
             
-            {/* Error Message */}
-            {formError && (
-              <div className={`px-4 py-4 rounded-md flex items-center ${
-                formError.includes("logged in") 
-                  ? "bg-blue-50 border border-blue-300 text-blue-800" 
-                  : "bg-red-50 border border-red-300 text-red-800"
-              }`}>
-                <div className="mr-3 flex-shrink-0">
-                  {formError.includes("logged in") ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </div>
-                <p className="text-sm font-medium">{formError}</p>
-              </div>
-            )}
+            {/* ASCII Art - fixed height with scroll */}
+            <div className="h-24 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#1E1E2E' }}>
+              <pre className="whitespace-pre font-mono text-[10px] text-center" style={{ color: '#91c9a6' }}>{grokCharacter.asciiArt}</pre>
+            </div>
             
-            {/* Form Actions */}
-            <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 mt-2">
+            {/* Story */}
+            <div className="flex flex-col">
+              <p className="text-xs italic line-clamp-2" style={{ color: '#91c9a6' }}>{grokCharacter.story}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-xs mx-auto flex justify-center items-center h-40 rounded-md border border-[#91c9a6] shadow p-4" style={{ backgroundColor: '#1E1E2E' }}>
+            <p className="text-sm" style={{ color: '#91c9a6' }}>Connect your wallet to generate a character</p>
+          </div>
+        )}
+      </div>
+      
+      {/* All Characters Section */}
+      <div className="mt-6">
+        <h2 className="text-lg font-bold mb-3 text-center" style={{ color: '#91c9a6' }}>GrokCII Characters (20 Most Recent)</h2>
+        
+        {/* Search Input - Moved here */}
+        <div className="max-w-md mx-auto mb-4">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+              </svg>
+            </div>
+            <input
+              type="text"
+              className="block w-full p-2 pl-10 pr-10 text-sm border border-[#91c9a6] rounded-lg focus:outline-none"
+              style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+              placeholder="Search GrokCII characters..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+            />
+            {searchQuery && (
               <button
                 type="button"
-                onClick={closeModal}
-                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-gray-100 border border-gray-300 text-gray-700 h-8 text-sm justify-center"
-                style={{ fontFamily: 'var(--font-dm-mono)' }}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                onClick={() => setSearchQuery('')}
               >
-                <span className="font-bold">Cancel</span>
+                <svg 
+                  className="w-4 h-4 text-gray-500 hover:text-[#91c9a6] transition-colors" 
+                  aria-hidden="true" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-              <button
-                type="submit"
-                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#f0b90b]/10 border border-[#f0b90b] text-[#f0b90b] h-8 text-sm justify-center font-bold"
-                style={{ fontFamily: 'var(--font-dm-mono)' }}
+            )}
+          </div>
+        </div>
+        
+        {isSearching ? (
+          <div className="flex justify-center my-4 h-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#91c9a6]"></div>
+          </div>
+        ) : allCharacters.length === 0 ? (
+          <div className="text-center my-8" style={{ color: '#91c9a6' }}>
+            {searchQuery ? `No GrokCII characters found matching "${searchQuery}"` : "No GrokCII characters found"}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            {allCharacters.map((character) => (
+              <div 
+                key={character._id.toString()} 
+                className="rounded-md border border-[#91c9a6] shadow px-4 py-3 flex flex-col gap-1 hover:border-[#91c9a6] transition-all duration-300 cursor-pointer"
+                style={{ backgroundColor: '#1E1E2E', color: '#91c9a6' }}
+                onClick={() => openDetailModal(character)}
               >
-                <span>Create Team</span>
+                <div className="flex flex-row items-center justify-between">
+                  <div className="flex flex-col">
+                      <p className="text-sm font-bold truncate" style={{ color: '#91c9a6' }}>{character.name}</p>
+                  </div>
+                </div>
+                
+                  {/* ASCII Art - fixed height with scroll */}
+                  <div className="h-24 overflow-auto rounded p-1 my-1" style={{ backgroundColor: '#1E1E2E' }}>
+                    <pre className="whitespace-pre font-mono text-[10px] text-center" style={{ color: '#91c9a6' }}>{character.asciiArt}</pre>
+                  </div>
+                
+                {/* Story */}
+                <div className="flex flex-col">
+                  <p className="text-xs italic line-clamp-2" style={{ color: '#91c9a6' }}>{character.story}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* Character Detail Modal */}
+      <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} title={selectedCharacter?.name || "Character Details"}>
+        {selectedCharacter && (
+          <div className="w-full">
+            <div className="p-4 rounded-md mb-4 overflow-x-auto" style={{ backgroundColor: '#1E1E2E' }}>
+              <pre className="whitespace-pre font-mono text-sm text-center" style={{ color: '#91c9a6' }}>{selectedCharacter.asciiArt}</pre>
+            </div>
+            <p className="mb-4" style={{ color: '#91c9a6' }}>{selectedCharacter.story}</p>
+            <div className="flex justify-end">
+              <button
+                onClick={closeDetailModal}
+                className="flex items-center overflow-hidden rounded-md p-2 text-left outline-none transition-all duration-300 ease-in-out hover:bg-[#1E1E2E] border border-[#91c9a6] h-8 text-sm justify-center cursor-pointer"
+                style={{ color: '#91c9a6', fontFamily: 'var(--font-dm-mono)' }}
+              >
+                <span className="font-bold">Close</span>
               </button>
             </div>
-          </form>
-        </Modal>
-      </div>
-    </>
+          </div>
+        )}
+      </Modal>
+    </div>
   );
 }
